@@ -9,8 +9,11 @@ import org.graphstream.graph.implementations.MultiGraph;
  * Stan
  */
 public class Stan {
-    Node node;
+    /** Przechowuje  element grafu który reprezentuje*/
+    Node node;  
+    /** Referencja do grafu w którym występuje */
     MultiGraph graph;
+    /** Przechowuje możliwe przejścia dla danego punktu */
     ArrayList<Przejscie> przejscia;
 
     public Stan(String id, MultiGraph singleGraph){
@@ -43,9 +46,13 @@ public class Stan {
         this.przejscia.add(przejscie);
     }
 
-    public void pokolorujNaAktywna() {
-
-        this.node.addAttribute("ui.style", "fill-color:#77FF77;");
+    public void pokolorujNaAktywny() {
+        if(this.isAkceptujacy()){
+            this.node.addAttribute("ui.style", "fill-color:#FFAA77;");
+        }
+        else{
+            this.node.addAttribute("ui.style", "fill-color:#77FF77;");
+        }
     }
 
     public void pokolorujNaNieAktywna(){
@@ -59,6 +66,22 @@ public class Stan {
         this.node.addAttribute("ui.style", "fill-color:#FF1111;");
         this.node.setAttribute("akceptujacy", true);
     }
+
+    public boolean isAkceptujacy() {
+        return (boolean) this.node.getAttribute("akceptujacy");
+    }
+
+    public Przejscie znajdzMozliwePrzejscie(String znak) {
+
+        for (Przejscie przejscie : this.przejscia) {
+            if(przejscie.isZnakOk(znak)){
+                return przejscie;
+            }
+        }
+        
+        return null;
+    }
+
 
 
 }

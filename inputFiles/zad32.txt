@@ -1,0 +1,33 @@
+alfabet tasmowy:
+01#
+alfabet wejsciowy:
+01
+slowo wejsciowe:
+1111110111
+stany:
+A B C D E F G H I J K L
+stan poczatkowy:
+A
+stany akceptujace:
+K I
+relacja przejscia:
+A 0 A 0 P
+A 1 A 1 P
+A # B # L
+B 1 C # L
+C 1 D # L
+D 0 D 0 L
+D 1 D 1 L
+D # E # P
+E 0 H 1 P
+H 1 H # P
+H # I # P
+E 1 G # P
+G 1 G 1 P
+G 0 G 0 P
+G # C # L
+C 0 F 0 L
+F # J # P
+J 0 K 1 P
+F 1 L 1 P
+L 0 K # P

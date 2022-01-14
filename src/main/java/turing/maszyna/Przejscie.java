@@ -4,7 +4,6 @@ import java.util.HashMap;
 
 import org.graphstream.graph.Edge;
 import org.graphstream.graph.implementations.MultiGraph;
-import org.graphstream.graph.implementations.SingleGraph;
 
 public class Przejscie {
     Stan biezacyStan = null;
@@ -49,5 +48,14 @@ public class Przejscie {
         krawedz.addAttribute("ui.label", znakCzytany+","+znakDoNapisania+","+ (kierunek==Kierunek.LEWO ? "L" : "P"));
         krawedz.addAttribute("ui.style", "text-offset:10,10;");
         return krawedz;
+    }
+
+    /**
+     * Sprawdza czy podany znak jest akceptowany dla tego przejścia
+     * @param znak
+     * @return
+     */
+    public boolean isZnakOk(String znak) {
+        return znakCzytany.equals(znak);
     }
 }

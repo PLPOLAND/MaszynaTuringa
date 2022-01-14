@@ -4,8 +4,10 @@ import java.util.ArrayList;
 
 import org.graphstream.graph.implementations.SingleGraph;
 
+import turing.Stale;
+
 public class Tasma {
-    final int rozszerzenieTasmy = 32;
+    
 
     /**Przechowuje kolejne komórki taśmy*/
     ArrayList<Znak> tasma;
@@ -15,34 +17,56 @@ public class Tasma {
     Znak aktualnyZnak;
     /** index aktualnego znaku w tasmie */
     int aktualnyIndex = 1;
+    /** przechowuje i wyświetla "stary znak" */
+    Znak staryZnak;
 
     public Tasma(){
         grafTasmy = new SingleGraph("Tasma");
         grafTasmy.display(false);
         tasma = new ArrayList<>();
-        for (int i = 0; i < rozszerzenieTasmy; i++) {
+        for (int i = 0; i < Stale.ROZSZERZENIE_TASMY; i++) {
             Znak nastepnyZnak = new Znak(grafTasmy, "tasma"+i, i);
             if(i!=0){
-                tasma.get(tasma.size()-1).ustawNastępnik(nastepnyZnak);
+                tasma.get(tasma.size()-1).ustawNastepnik(nastepnyZnak);
             }
             tasma.add(nastepnyZnak);
         }
+
         
         aktualnyZnak = tasma.get(aktualnyIndex);
         aktualnyZnak.kolorujJakoAktywny();
 
     }
+
+    /**
+     * Przesuwa node-a wyświetlającego stary znak w miejsce nad znakiem o podanym indexie
+     * @param index
+     */
+    private void przesunStaryZnak(int index) {
+        if (staryZnak == null) {
+            staryZnak = new Znak(grafTasmy, "stary", 0);
+            staryZnak.kolorujJakoStary();
+        }
+        
+        staryZnak.ustawZnak(aktualnyZnak.getZnak());
+        staryZnak.usunPoloczenia();
+        staryZnak.move(tasma.get(index).x, tasma.get(index).y+1);
+        staryZnak.ustawZnak(tasma.get(index).getZnak());
+        staryZnak.ustawNastepnikDlaStaregoZnaku(tasma.get(index));
+    }
     /**
      * Rozszerza taśmę o odpowiednią ilość pól z prawej strony taśmy
      */
     public void rozszerzZPrawej() {
-        for (int i = tasma.size(); i < tasma.size() + rozszerzenieTasmy; i++) {
+        int nowyRozmiarTasmy = tasma.get(tasma.size()-1).getIdNumber() + Stale.ROZSZERZENIE_TASMY;
+        for (int i = tasma.size(); i < nowyRozmiarTasmy; i++) {
             Znak nastepnyZnak = new Znak(grafTasmy, "tasma" + i, i);
             if (i != 0) {
-                tasma.get(tasma.size() - 1).ustawNastępnik(nastepnyZnak);
+                tasma.get(tasma.size() - 1).ustawNastepnik(nastepnyZnak);
             }
             tasma.add(nastepnyZnak);
         }
+        System.out.println("-------TASMA ROZSZERZONA Z PRAWEJ STRONY -------");
     }
     /**
      * Rozszerza taśmę o odpowiednią ilość pól od przodu taśmy
@@ -50,16 +74,17 @@ public class Tasma {
     public void rozszerzZLewej() {
         Znak pierwszyZnak = tasma.get(0);
         int fstId = Integer.parseInt(pierwszyZnak.getNode().getId().substring(5));
-        for (int i =  fstId-1; i > fstId - rozszerzenieTasmy - 1; i--) {
+        for (int i =  fstId-1; i > fstId - Stale.ROZSZERZENIE_TASMY - 1; i--) {
             Znak nastepnyZnak = new Znak(grafTasmy, "tasma" + i, i);
-            nastepnyZnak.ustawZnak(i+"");
+            // nastepnyZnak.ustawZnak(i+"");
             if (i != 0) {
-                nastepnyZnak.ustawNastępnik(tasma.get(0));
+                nastepnyZnak.ustawNastepnik(tasma.get(0));
                 // tasma.get(tasma.size() - 1).ustawNastępnik(nastepnyZnak);
             }
             tasma.add(0, nastepnyZnak);//dodaj z przodu taśmy
         }
-        aktualnyIndex += rozszerzenieTasmy;
+        aktualnyIndex += Stale.ROZSZERZENIE_TASMY;
+        System.out.println("-------TASMA ROZSZERZONA Z LEWEJ STRONY -------");
     }
 
     /**
@@ -78,6 +103,28 @@ public class Tasma {
         return aktualnyZnak.getZnak();
         
     }
+    /**
+     * Porusza głowę w PRAWO z wcześniejszą zmianą znaku
+     * @param znak - nowy znak
+     * @return 
+     */
+    public Znak poruszWPrawo(String znak){
+        przesunStaryZnak(aktualnyIndex);
+        aktualnyZnak.ustawZnak(znak);
+        return poruszWPrawo();
+    }
+     
+    /**
+     * Porusza głowę w LEWO z wcześniejszą zmianą znaku
+     * 
+     * @param znak - nowy znak
+     * @return
+     */
+    public Znak poruszWLewo(String znak){
+        przesunStaryZnak(aktualnyIndex);
+        aktualnyZnak.ustawZnak(znak);
+        return poruszWLewo();
+    }
 
     /**
      * Zmienia aktualnie wskazywany znak na ten z prawej.
@@ -86,7 +133,7 @@ public class Tasma {
      * 
      * @return nowy aktualny znak
      */
-    public Znak poruszWPrawo(){
+    private Znak poruszWPrawo(){
         
         aktualnyZnak.kolorujJakoNieAktywny();
         aktualnyIndex++;
@@ -106,7 +153,7 @@ public class Tasma {
      * 
      * @return nowy aktualny znak
      */
-    public Znak poruszWLewo(){
+    private Znak poruszWLewo(){
         aktualnyZnak.kolorujJakoNieAktywny();
         aktualnyIndex--;
         if (aktualnyIndex == 0) {
@@ -117,7 +164,10 @@ public class Tasma {
 
         return aktualnyZnak;
     }
-
+    /**
+     * Pozwala na łatwe dodanie ciągu znaków do taśmy 
+     * @param wejscie
+     */
     public void dodajCiagWejsciowy(String wejscie) {
         for (int i = 0; i < wejscie.length(); i++) {
             this.setZnak(wejscie.charAt(i)+"");
@@ -127,6 +177,19 @@ public class Tasma {
             this.poruszWLewo();
         }
 
+    }
+
+    @Override
+    public String toString() {
+        String slowo = "";
+
+        for (Znak znak : tasma) {
+            if (!znak.getZnak().equals("#")) {
+                slowo+= znak.getZnak();
+            }
+        }
+
+        return slowo;
     }
    
 }
