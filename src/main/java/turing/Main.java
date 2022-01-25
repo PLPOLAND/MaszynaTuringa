@@ -43,7 +43,7 @@ public class Main {
                     maszyna.wykonajPrzejscie();
                 } 
                 else {
-                    Tools.pause(100);
+                    Tools.pause(200);
                     maszyna.wykonajPrzejscie();
                 }
             } catch (Exception e) {

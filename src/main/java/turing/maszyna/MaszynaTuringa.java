@@ -9,15 +9,27 @@ import org.graphstream.graph.implementations.MultiGraph;
 import turing.maszyna.Przejscie.Kierunek;
 import turing.tasma.Tasma;
 
+/**
+ * Maszyna Turinga
+ * Klasa odpowiadająca za sterowanie wyświetlaniem grafu maszyny turinga i zapewniająca jej poprawne działanie
+ * 
+ */
 public class MaszynaTuringa {
 
+    /**
+     * Odpowiada za wyświetlanie reprezentacji maszyny Turinga w formie grafu
+     */
     private MultiGraph graf;
 
     private HashMap<String,Stan> stany; // <id, Stan>
+    
+    /** Przechowuje stan na którym aktualnie znajduje się maszyna Turinga */
     Stan aktywnyStan = null;
 
+    /** Odpowiada za reprezentacje taśmy w maszynie turinga */
     private Tasma tasma;
 
+    /** Przechowuje  słowo które maszyna otrzymała na wejściu*/
     private String slowoWejsciowe = "";
 
     public MaszynaTuringa(){
@@ -54,6 +66,10 @@ public class MaszynaTuringa {
         return this.tasma;
     }
 
+    /**
+     * Odpowiada za stworzenie "strzałki" na wyświetlanym grafie, która informuje o tym, który stan jest stanem początkowym maszyny Turinga
+     * @param nazwaStanu - id stanu, który jest stanem wejsciowym
+     */
     public void setStanPoczatkowy(String nazwaStanu) {
 
         Stan nowyStan = new Stan("Begin", graf);
@@ -67,11 +83,15 @@ public class MaszynaTuringa {
         stany.get(nazwaStanu).pokolorujNaAktywny();
         aktywnyStan = stany.get(nazwaStanu);
     }
-
+    /**
+     * Ustawia stanowi "flagę" która będzie informować, że stan jest stanem akceptującym xD 
+     * @param string
+     */
     public void setStanAkceptujacy(String string) {
         stany.get(string).setAkceptujacy();
     }
     /**
+     * Sorawdza czy maszyna doszła do stanu akceptującego i zakończyła obliczenia
      * @return true jeśli aktualny stan jest stanem akceptujacym
      */
     public boolean ended() {
@@ -106,9 +126,17 @@ public class MaszynaTuringa {
 
     }
 
+    /**
+     * @return zwraca słowo, które maszyna dostała przed rozpoczęciem obliczeń
+     */
     public String getSlowoWejsciowe() {
         return this.slowoWejsciowe;
     }
+
+    /**
+     * Ustawia słowo wejsciowe dla maszyny
+     * @param slowo
+     */
     public void setSlowoWejsciowe(String slowo){
         this.slowoWejsciowe = slowo;
         tasma.dodajCiagWejsciowy(slowo);

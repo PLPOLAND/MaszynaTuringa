@@ -6,7 +6,7 @@ import org.graphstream.graph.Node;
 import org.graphstream.graph.implementations.MultiGraph;
 
 /**
- * Stan
+ * Stan - reprezentuje stan maszyny turinga
  */
 public class Stan {
     /** Przechowuje  element grafu który reprezentuje*/
@@ -25,6 +25,7 @@ public class Stan {
         setLabel(id);
     }
     
+    /**Ustawia nazwę wyświetlaną w Stanie na grafie*/
     public void setLabel(String l){
         this.node.addAttribute("ui.label", l);
     }
@@ -37,15 +38,25 @@ public class Stan {
     public void setNode(Node node) {
         this.node = node;
     }
-
+    /**
+     * 
+     * @return ArrayList przechowujący kolejne dozwolone przejścia z tego stanu maszyny
+     */
     public ArrayList<Przejscie> getPrzejscia() {
         return this.przejscia;
     }
 
+    /**
+     * Dodaje podane w argumencie przejście do listy dozwolonych przejść z tego stanu
+     * @param przejscie
+     */
     public void addPrzejscie(Przejscie przejscie) {
         this.przejscia.add(przejscie);
     }
 
+    /**
+     * Koloruje reprezentację stanu na kolor oznaczający, żę stan jest stanem aktywnym
+     */
     public void pokolorujNaAktywny() {
         if(this.isAkceptujacy()){
             this.node.addAttribute("ui.style", "fill-color:#FFAA77;");
@@ -55,6 +66,9 @@ public class Stan {
         }
     }
 
+    /**
+     * Koloruje reprezentację stanu na kolor oznaczający, żę stan jest stanem nie aktywnym
+     */
     public void pokolorujNaNieAktywna(){
         this.node.addAttribute("ui.style", "fill-color:#FFFFFF;");
     }
@@ -66,11 +80,19 @@ public class Stan {
         this.node.addAttribute("ui.style", "fill-color:#FF1111;");
         this.node.setAttribute("akceptujacy", true);
     }
-
+    /**
+     * Sprawdza czy ten stan jest stanem akceptującym maszyny Turinga
+     * @return boolean
+     */
     public boolean isAkceptujacy() {
         return (boolean) this.node.getAttribute("akceptujacy");
     }
 
+    /**
+     * Sprawdza Czy isnieje akceptowane przejście dla podanego znaku.
+     * @param znak
+     * @return
+     */
     public Przejscie znajdzMozliwePrzejscie(String znak) {
 
         for (Przejscie przejscie : this.przejscia) {

@@ -6,6 +6,9 @@ import org.graphstream.graph.implementations.SingleGraph;
 
 import turing.Stale;
 
+/**
+ * Klasa odpowiadająca za obsługę taśmy maszyny turinga i wyświetlanie jej reprezentacji.
+ */
 public class Tasma {
     
 
@@ -179,6 +182,9 @@ public class Tasma {
 
     }
 
+    /**
+     * @return String - zawiera znaki zapisane na taśmie, pomijając wszystkie "#".
+     */
     @Override
     public String toString() {
         String slowo = "";

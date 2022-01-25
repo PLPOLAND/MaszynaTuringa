@@ -6,13 +6,21 @@ import org.graphstream.graph.implementations.SingleGraph;
 
 import turing.Stale;
 
+
+/**
+ * Klasa reprezentująca pojedyńczy znak na taśmie
+ */
 public class Znak{
+    /**Odnośnik do grafu na którym znak jest wyświetlany */
     private SingleGraph graf;
+    /**Odnośnik do elementu grafu który odpowiada za wyświetlanie tego znaku */
     private Node node;
 
 
     
+    /**Przechowuje lokalizację x -znaku na grafie taśmy */
     int x;
+    /**Przechowuje lokalizację y - znaku na grafie taśmy */
     int y;
 
     public Znak(SingleGraph _graf,String id, int position){
@@ -55,15 +63,23 @@ public class Znak{
         node.addAttribute("x", x);
         node.addAttribute("y", y);
     }
-
+    /**
+     * Ustawia znak na "#"
+     */
     public void ustawPusty() {
         node.setAttribute("ui.label", "#");
     }
-
+    /**
+     * Ustawia przechowywany symbol na podany w argumencie
+     * @param znak - symbol do ustawienia
+     */
     public void ustawZnak(String znak){
         node.setAttribute("ui.label", znak);
     }
-
+    /**
+     * 
+     * @return aktualnie przechowywany symbol w znaku
+     */
     public String getZnak(){
         return node.getAttribute("ui.label");
     }
@@ -75,21 +91,32 @@ public class Znak{
     public void ustawNastepnik(Znak n){
         graf.addEdge(node.getId()+""+n.getId(), node, n.getNode(), false);
     }
-
+    /**
+     * Metoda do tworzenia krawędzi w grafie (tylko dla "Znaku" przedstawiającego poprzednio przechowywany znak na danym "Znaku")
+     * @param n
+     */
     public void ustawNastepnikDlaStaregoZnaku(Znak n){
         graf.addEdge(node.getId()+""+n.getId(), node, n.getNode(), true);
     }
-
+    /**
+     * Usuwa wszystkie krawędzie dla tego znaku
+     */
     public void usunPoloczenia(){
         for (Edge edge : node.getEdgeSet()) {
             graf.removeEdge(edge);
         }
     }
-
+    /**
+     * Zwraca id "node-a " który reprezentuje ten "Znak"
+     * @return String - id node-a
+     */
     public String getId(){
         return node.getId();
     }
-
+    /**
+     * 
+     * @return Node - Node reprezentujący ten "Znak"
+     */
     public Node getNode() {
         return node;
     }
@@ -106,6 +133,9 @@ public class Znak{
         node.addAttribute("ui.style", "fill-color:#FFFFFF;");
     }
 
+    /**
+     * Koloruje znak który przedstawia "stary znak" 
+     */
     public void kolorujJakoStary() {
         node.addAttribute("ui.style", "fill-color:#FF5555;");
     }
@@ -128,6 +158,10 @@ public class Znak{
         return "tasma" + --id;
     }
 
+    /**
+     * 
+     * @return id znaku pobrane z id node-a i przekonwertowane na int
+     */
     public int getIdNumber() {
         return Integer.parseInt(this.getNode().getId().substring(5));
     }
